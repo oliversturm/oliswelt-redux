@@ -3,8 +3,34 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import Immutable from 'seamless-immutable';
+import { createStore, combineReducers } from 'redux';
+import { createTodoReducer } from './reducers/todoReducer';
+import { Provider } from 'react-redux';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const todoReducer = createTodoReducer(
+  Immutable([
+    { done: true, text: "Read Oli's Redux article" },
+    { done: false, text: 'Play with Redux yourself' }
+  ])
+);
+
+// In a real app there would be more than one here
+const reducers = combineReducers({
+  todos: todoReducer
+});
+
+const store = createStore(
+  reducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
